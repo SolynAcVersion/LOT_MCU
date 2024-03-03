@@ -1,0 +1,176 @@
+<!--pages/setting/setting.wxml-->
+
+<view class="page-container">
+    <view class="data_setting">
+        <!-- 温度阈值设置 -->
+        <view class="data_card">
+            <view class="title_container">
+                <image class="data_card_icon" src="/static/temperaturesetting.png" />
+                <view class="data_card_title">
+                    温度阈值设置
+                </view>
+            </view>
+
+            <view class="values_container">
+                <view class="data_card_max">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/maxvalue.png" />
+                        <view class="card_title">
+                            温度最高值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入温度上限值" bindinput="handleInput" data-type="temperature_upvalue" />
+                        <text>℃</text>
+                    </view>
+                </view>
+
+                <view class="data_card_min">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/minvalue.png" />
+                        <view class="data_card_title">
+                            温度最低值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入温度下限值" bindinput="handleInput" data-type="temperature_downvalue" />
+                        <text>℃</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        
+        <!-- 湿度设置 -->
+        <view class="data_card">
+             <view class="title_container">
+                <image class="data_card_icon" src="/static/humiditysetting.png" />
+                <view class="data_card_title">
+                    湿度阈值设置
+                </view>
+            </view>
+	    <view class="values_container">
+            	<view class="data_card_max">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/maxvalue.png" />
+                        <view class="card_title">
+                            湿度最高值
+                        </view>
+                    </view>
+
+                	<view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入湿度上限值" bindinput="handleInput" data-type="humidity_upvalue" />
+                        <text>%</text>
+                    </view>
+                </view>
+                    <view class="data_card_min">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/minvalue.png" />
+                        <view class="data_card_title">
+                            湿度最低值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入湿度下限值" bindinput="handleInput" data-type="humidity_downvalue" />
+                        <text>%</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 土壤湿度设置 -->
+        <view class="data_card">
+            <view class="title_container">
+                <image class="data_card_icon" src="/static/soil_humiditysetting.png" />
+                <view class="data_card_title">
+                    土壤湿度阈值设置
+                </view>
+            </view>
+
+            <view class="values_container">
+                <view class="data_card_max">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/maxvalue.png" />
+                        <view class="card_title">
+                            土壤湿度最高值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入土壤湿度上限值" bindinput="handleInput" data-type="soil_humidity_upvalue" />
+                        <text>%</text>
+                    </view>
+                </view>
+
+                <view class="data_card_min">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/minvalue.png" />
+                        <view class="data_card_title">
+                            土壤湿度最低值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入土壤湿度下限值" bindinput="handleInput" data-type="soil_humidity_downvalue" />
+                        <text>%</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+       <!-- 一氧化碳浓度设置 -->
+       <view class="data_card">
+            <view class="title_container">
+                <image class="data_card_icon" src="/static/cosetting.png" />
+                <view class="data_card_title">
+                    一氧化碳浓度阈值设置
+                </view>
+            </view>
+
+            <view class="alone_values_container">
+                <view class="data_card_max">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/maxvalue.png" />
+                        <view class="alone_card_title">
+                            一氧化碳浓度最高值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入一氧化碳浓度上限值" bindinput="handleInput" data-type="cogas_value" />
+                        <text>ppm</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 烟雾浓度设置 -->
+        <view class="data_card">
+            <view class="title_container">
+                <image class="data_card_icon" src="/static/smoggassetting.png" />
+                <view class="data_card_title">
+                    烟雾浓度阈值设置
+                </view>
+            </view>
+
+            <view class="alone_values_container">
+                <view class="data_card_max">
+                    <view class="title-with-icon">
+                        <image class="data_card_value" src="/static/maxvalue.png" />
+                        <view class="alone_card_title">
+                           烟雾浓度最高值
+                        </view>
+                    </view>
+
+                    <view class="input-container">
+                        <input class="input-field" type="digit" placeholder="请输入烟雾浓度上限值" bindinput="handleInput" data-type="smoggas_value" />
+                        <text>ppm</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <button class="submit" type="primary" bindtap="dataUpload" disabled="{{!isButtonActive}}">确 认</button>
+</view>

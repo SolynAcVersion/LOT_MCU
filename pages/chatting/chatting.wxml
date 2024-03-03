@@ -1,0 +1,35 @@
+<!-- pages/chatting/chatting.wxml -->
+
+<view class="button_container">
+    <button class="clean" type="primary" bindtap="clearHistory">清除历史聊天记录</button>
+</view>
+
+<view class="scroll-list">
+    <block wx:for="{{chatList}}" wx:key="item">
+        <view class="{{item.msgId==login.id?'row row-self':'row'}}">
+            <view class="{{item.msgId==login.id?'head-self':'head-friend'}} ">
+                <image class="avatar" src="{{item.avatar}}"></image>
+            </view>
+            <view>
+                <view class="{{item.msgId==login.id?'message msg-self':'message msg-friend'}}">
+                    <text user-select="true">{{item.message}}</text>
+                </view>
+            </view>
+        </view>
+    </block>
+</view>
+
+<!-- 发送信息 -->
+<view class="footer">
+    <view class="row">
+        <view class="input-box">
+            <textarea class="text-area" placeholder-class="placeholder" show-confirm-bar="{{false}}" cursor-spacing="30" maxlength="500"
+                disable-default-padding="{{true}}"
+                confirm-hold="{{true}}" hold-keyboard="{{true}}" auto-height="false" placeholder="请输入您要发送的消息" bindinput="inputClick" value="{{content}}">
+            </textarea>
+        </view>
+        <view class="send-btn" wx:if="{{content!=''}}">
+            <text class="send-text" bindtap="sendClick">发 送</text>
+        </view>
+    </view>
+</view>

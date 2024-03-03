@@ -1,0 +1,421 @@
+<!--pages/home/home.wxml-->
+
+<view class="page-container">
+
+    <!-- 天气部分 -->
+    <swiper class="swiper" indicator-dots="true" autoplay="true" interval="5000" duration="500" bindchange="bindchange">
+        <block wx:for="{{pages}}" wx:key="unique">
+            <swiper-item class="swiper-item">
+                <view class="content {{current == index ? 'active' : ''}}">
+                <!-- 第1页内容 -->
+                    <block wx:if="{{index == 0}}">
+                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
+                            <view class="header-position">
+                                <view>当前位置：{{weatherInfo.location.name}}</view>
+                            </view>
+
+                            <view class="header-temperature">
+                                <view>当前温度：{{weatherInfo.daily[0].low}} - {{weatherInfo.daily[0].high}}℃</view>
+                            </view>
+
+                            <view class="header-phenomena">
+                                <view>当前天气：{{weatherInfo.daily[0].text_day}}到{{weatherInfo.daily[0].text_night}}</view>
+                            </view>
+
+                            <view class="header-humidity">
+                                <view>当前相对湿度：{{weatherInfo.daily[0].humidity}}%</view>
+                            </view>
+
+                            <view class="header-rainfall">
+                                <view>当前降水量：{{weatherInfo.daily[0].rainfall}}mm</view>
+                            </view>
+                        </view>
+                    </block>
+
+                <!-- 第2页内容 -->
+                    <block wx:if="{{index == 1}}">
+                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
+                            <view class="header-position">
+                                <view>当前位置：{{weatherInfo.location.name}}</view>
+                            </view>
+
+                            <view class="header-temperature">
+                                <view>明天温度：{{weatherInfo.daily[1].high}} - {{weatherInfo.daily[1].low}}℃</view>
+                            </view>
+
+                            <view class="header-phenomena">
+                                <view>明天天气：{{weatherInfo.daily[1].text_day}}到{{weatherInfo.daily[1].text_night}}</view>
+                            </view>
+
+                            <view class="header-humidity">
+                                <view>明天相对湿度：{{weatherInfo.daily[1].humidity}}%</view>
+                            </view>
+
+                            <view class="header-rainfall">
+                                <view>明天降水量：{{weatherInfo.daily[1].rainfall}}mm</view>
+                            </view>
+                        </view>
+                    </block>
+
+                <!-- 第3页内容 -->
+                    <block wx:if="{{index == 2}}">
+                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
+                            <view class="header-position">
+                                <view>当前位置：{{weatherInfo.location.name}}</view>
+                            </view>
+
+                            <view class="header-temperature">
+                                <view>后天温度：{{weatherInfo.daily[2].high}} - {{weatherInfo.daily[2].low}}℃</view>
+                            </view>
+
+                            <view class="header-phenomena">
+                                <view>后天天气：{{weatherInfo.daily[2].text_day}}到{{weatherInfo.daily[2].text_night}}</view>
+                            </view>
+
+                            <view class="header-humidity">
+                                <view>后天相对湿度：{{weatherInfo.daily[2].humidity}}%</view>
+                            </view>
+
+                            <view class="header-rainfall">
+                                <view>后天降水量：{{weatherInfo.daily[2].rainfall}}mm</view>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </swiper-item>
+        </block>
+    </swiper>
+
+    <!-- 环境数据 -->
+    <view class="threshoil_title">
+        <text>环境数据</text>
+    </view>
+
+    <!-- 数据部分 -->
+    <view class="data">
+        <!-- 温度 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/temperature.png" />
+            <view>
+                <view class="data_card_title">
+                    温度
+                </view>
+                <view class="data_card_value">
+                    {{temperature}}℃
+                </view>
+            </view>
+        </view>
+
+        <!-- 湿度 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/humidity.png" />
+            <view>
+                <view class="data_card_title">
+                    湿度
+                </view>
+                <view class="data_card_value">
+                    {{humidity}}%
+                </view>
+            </view>
+        </view>
+
+        <!-- 土壤湿度 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/soil_humidity.png" />
+            <view>
+                <view class="data_card_title">
+                    土壤湿度
+                </view>
+                <view class="data_card_value">
+                    {{soil_humidity}}%
+                </view>
+            </view>
+        </view>
+
+        <!-- 一氧化碳浓度 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/cogas.png" />
+            <view>
+                <view class="data_card_title">
+                    CO浓度
+                </view>
+                <view class="data_card_value">
+                    {{cogas}}p
+                </view>
+            </view>
+        </view>
+
+        <!-- 烟雾浓度 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/smoggas.png" />
+            <view>
+                <view class="data_card_title">
+                    烟雾浓度
+                </view>
+                <view class="data_card_value">
+                    {{smoggas}}p
+                </view>
+            </view>
+        </view>
+
+        <!-- 火焰 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/fire.png" />
+            <view>
+                <view class="data_card_title">
+                    火焰
+                </view>
+                <view class="data_card_value">
+                    {{ fire === 0 ? '有火' : '无火' }}
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 设备控制 -->
+    <view class="threshoil_title">
+        <text>设备控制</text>
+    </view>
+
+    <view class="data">
+        <!-- 风扇 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/fan.png" />
+            <view>
+                <view class="data_card_title">
+                    风扇
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{fan}}" bindchange="handleFanSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 加热器 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/heat.png" />
+            <view>
+                <view class="data_card_title">
+                    加热器
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{heat}}" bindchange="handleHeatSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 加湿器 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/humidification.png" />
+            <view>
+                <view class="data_card_title">
+                    加湿器
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{humidification}}" bindchange="handleHumidificationSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 水泵 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/pumpin.png" />
+            <view>
+                <view class="data_card_title">
+                    水泵
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{pumpout}}" bindchange="handlePumpoutSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 抽水泵 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/pumpout.png" />
+            <view>
+                <view class="data_card_title">
+                    抽水器
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{pumpin}}" bindchange="handlePumpinSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+
+        <!-- 蜂鸣器 -->
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/buzzer.png" />
+            <view>
+                <view class="data_card_title">
+                    蜂鸣器
+                </view>
+                <view class="data_card_value">
+                    <switch checked="{{buzzer}}" bindchange="handleBuzzerSwitchChange" color="#3d7ef5" />
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 设备阈值查看 -->
+    <view class="threshoil_title">
+        <text>设备阈值</text>
+    </view>
+    
+    <view class="data">
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/temperaturesetting.png" />
+            <view>
+                <view class="data_card_title">
+                    温度上限
+                </view>
+                <view class="data_card_value">
+                    {{temperature_upvalue}}℃
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/temperaturesetting.png" />
+            <view>
+                <view class="data_card_title">
+                    温度下限
+                </view>
+                <view class="data_card_value">
+                    {{temperature_downvalue}}℃
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/humiditysetting.png" />
+            <view>
+                <view class="data_card_title">
+                    湿度上限
+                </view>
+                <view class="data_card_value">
+                    {{humidity_upvalue}}%
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/humiditysetting.png" />
+            <view>
+                <view class="data_card_title">
+                    湿度下限
+                </view>
+                <view class="data_card_value">
+                    {{humidity_downvalue}}%
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/soil_humiditysetting.png" />
+            <view>
+                <view class="data_card_title">
+                    土湿上限
+                </view>
+                <view class="data_card_value">
+                    {{soil_humidity_upvalue}}%
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/soil_humiditysetting.png" />
+            <view>
+                <view class="data_card_title">
+                    土湿下限
+                </view>
+                <view class="data_card_value">
+                    {{soil_humidity_downvalue}}%
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/cosetting.png" />
+            <view>
+                <view class="data_card_title">
+                    CO上限
+                </view>
+                <view class="data_card_value">
+                    {{cogas_value}}p
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/smoggassetting.png" />
+            <view>
+                <view class="data_card_title">
+                    烟雾上限
+                </view>
+                <view class="data_card_value">
+                    {{smoggas_value}}p
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 鸟类识别 -->
+    <view class="threshoil_title">
+        <text>识别鸟类</text>
+    </view>
+
+    <view class="bird_data">
+        <view class="bird_card">
+            <image class="bird_card_icon" src="/static/bird.png" />
+            <view>
+                <view class="bird_card_title">
+                    鸟
+                </view>
+                <view class="bird_card_value">
+                    {{ bird === 1 ? '有鸟' : '无鸟' }}
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 其他设备 -->
+    <view class="threshoil_title">
+        <text>其他设备</text>
+    </view>
+
+    <view class="data">
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/somewhere_temperature.png" />
+            <view>
+                <view class="data_card_title">
+                    任意温度
+                </view>
+                <view class="data_card_value">
+                    {{somewhere_temperature}}℃
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card">
+            <image class="data_card_icon" src="/static/somewhere_humidity.png" />
+            <view>
+                <view class="data_card_title">
+                    任意湿度
+                </view>
+                <view class="data_card_value">
+                    {{somewhere_humidity}}%
+                </view>
+            </view>
+        </view>
+
+        <view class="data_card" bindtap="onAddDevice">
+            <image class="data_card_icon" src="/static/add.png" />
+            <view>
+                <view class="add_card_title">
+                    添加设备
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

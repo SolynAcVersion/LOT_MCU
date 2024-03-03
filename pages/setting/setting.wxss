@@ -1,0 +1,107 @@
+/* pages/setting/setting.wxss */
+
+.page-container {
+    padding: 2%;
+}
+
+.data_setting {
+    margin-top: 20rpx;
+    display: grid;
+    overflow: hidden;
+    margin-bottom: 30rpx;
+}
+
+.title_container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 10rpx;
+    margin-top: 20rpx;
+}
+
+.data_setting .data_card .data_card_icon {
+    height: 80rpx;
+    width: 80rpx;
+    margin-right: 10rpx;
+}
+
+.data_card_title {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.alone_values_container {
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    width: 99.3%;
+}
+
+.alone_card_title {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.values_container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+}
+
+.data_card_max, .data_card_min {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 40rpx;
+    margin-top: 20rpx;
+    padding: 5rpx 5rpx;
+    flex-basis: 48%;
+}
+
+.data_card_max {
+    margin-left: 5rpx;
+}
+
+.data_card_min {
+    margin-right: 5rpx;
+}
+
+.data_card_title {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.title-with-icon {
+    display: flex;
+    align-items: center;
+    padding: 5rpx 5rpx;
+}
+
+.data_card_max .data_card_value {
+    height: 72rpx;
+    width: 72rpx;
+    margin-right: 20rpx;
+}
+
+.data_card_min .data_card_value {
+    height: 72rpx;
+    width: 72rpx;
+    margin-right: 20rpx;
+}
+
+.input-container {
+    padding: 10rpx;
+    display: flex;
+    align-items: center;
+}
+
+.input-field {
+    border: 1px solid #cccccc; /* 边框样式 */
+    border-radius: 15rpx; /* 边框圆角 */
+    padding: 15rpx;
+    font-size: 30rpx; /* 字体大小 */
+    width: calc(100% - 30rpx);
+    height: 40rpx;
+    margin-right: 10rpx;
+}
+
+.input-container text {
+    margin-left: 5rpx;
+}

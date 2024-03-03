@@ -1,0 +1,12 @@
+<!--index.wxml-->
+<scroll-view class="scrollarea" scroll-y type="list">
+
+    <view class="container">
+        <image class="background-image" src="/static/first_stage.jpg"></image>
+        <view class="content">
+            <text class="text-style">欢迎使用</text>
+            <text class="text-style">智能温室大棚管理系统</text>
+        </view>
+    </view>
+
+</scroll-view>
