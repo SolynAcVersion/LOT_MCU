@@ -1,160 +1,49 @@
 /* pages/home/home.wxss */
-
 .page-container {
-    padding: 4%;
+    padding-bottom: 32rpx;
 }
 
-.swiper {
-    height: 410rpx;
+.grid {
+    display: grid;
 }
 
-.content-view {
-    background-color: #3d7ef5;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    border-radius: 45rpx;
-    padding: 36rpx 40rpx;
-    margin: 0 10rpx;
-    overflow: visible;
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
 }
 
-.content-view .header-position,
-.content-view .header-temperature,
-.content-view .header-phenomena,
-.content-view .header-humidity,
-.content-view .header-rainfall{
-    display: flex;
-    justify-content: baseline;
-    font-size: 35rpx;
-    margin-bottom: 10rpx;
+.col-span-1 {
+    grid-column: span 1 / span 1;
 }
 
-.swiper-item .content {
-    transition: transform 0.3s ease-in-out;
+.text-sm { font-size: 28rpx; }
+.text-xs { font-size: 24rpx; }
+.text-lg { font-size: 36rpx; }
+.text-xl { font-size: 40rpx; }
+.text-2xl { font-size: 48rpx; }
+.text-3xl { font-size: 60rpx; }
+.text-4xl { font-size: 72rpx; }
+
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+
+.text-blue-100 { color: #dbeafe; }
+.text-blue-50 { color: #eff6ff; }
+.bg-blue-50 { background-color: #eff6ff; }
+
+.h-24 { height: 192rpx; }
+.w-40 { width: 320rpx; }
+.h-40 { height: 320rpx; }
+
+.shadow-soft {
+    box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.05);
+}
+
+.backdrop-blur-md {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Specific overrides for switch to match design size if needed */
+switch {
     transform: scale(0.8);
-    opacity: 0.5;
-}
-  
-.swiper-item .content.active {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.data {
-    margin-top: 40rpx;
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(auto-fill,300rpx);
-    grid-gap: 20rpx;
-    overflow: hidden;
-    margin-bottom: 10rpx;
-}
-
-.data .data_card{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    background-color: #ffffff;
-    border-radius: 40rpx;
-    display: flex;
-    justify-content: space-between;
-    padding: 25rpx 30rpx;
-    overflow: hidden;
-    margin-bottom: 20rpx;
-    margin-top: 10rpx;
-}
-
-.data .data_card view {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* 内容右对齐 */
-    text-align: right; /* 确保文本右对齐 */
-    min-width: 60rpx;
-}
-
-.data .data_card .data_card_icon{
-    margin-top: 18rpx;
-    height: 72rpx;
-    width: 72rpx;
-}
-
-.data .data_card .data_card_title{
-    font-size: 35rpx;
-    color: #7f7f7f;
-}
-
-.data .data_card .data_card_corp_value{
-    font-size: 35rpx;
-    font-weight: bold;
-    color: #7f7f7f;
-    min-width: 60rpx;
-}
-
-.data .data_card .data_card_value{
-    font-size: 48rpx;
-    font-weight: bold;
-    color: #7f7f7f;
-    min-width: 60rpx;
-}
-
-.threshoil_title {
-    text-align: center;
-    font-size: 45rpx;
-    margin-top: 30rpx;
-    color: #030000;
-    font-weight: bold;
-}
-
-.waring_data {
-    margin-top: 40rpx;
-    display: grid;
-    justify-content: center;
-    grid-template-columns: repeat(auto-fill,450rpx);
-    grid-gap: 20rpx;
-    overflow: hidden;
-    margin-bottom: 20rpx;
-}
-
-.waring_card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    background-color: #ffffff;
-    border-radius: 40rpx;
-    display: flex;
-    justify-content: space-between;
-    padding: 25rpx 30rpx;
-    overflow: hidden;
-    margin-bottom: 20rpx;
-    margin-top: 10rpx;
-}
-
-.waring_card view {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* 内容右对齐 */
-    text-align: right; /* 确保文本右对齐 */
-    min-width: 60rpx;
-}
-
-.waring_card_icon {
-    margin-top: 18rpx;
-    height: 90rpx;
-    width: 120rpx;
-}
-
-.waring_card_title {
-    font-size: 40rpx;
-    color: #7f7f7f;
-}
-
-.waring_card_value {
-    font-size: 48rpx;
-    font-weight: bold;
-    color: #7f7f7f;
-    min-width: 60rpx;
-}
-
-.add_card_title {
-    font-size: 38rpx;
-    font-weight: bold;
-    color: #7f7f7f;
-    margin-top: 20rpx;
 }

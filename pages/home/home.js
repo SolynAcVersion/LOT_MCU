@@ -16,7 +16,7 @@ Page({
         temperature: 0.0, // 温度
         humidity: 0.0, // 湿度
         soil_humidity: 0.0, // 土壤湿度
-        cogas: 0.0, // 一氧化碳浓度
+        cogas: 0.0, // 二氧化碳浓度
         smoggas: 0.0, // 烟雾浓度
         fire: 1, // 火焰状态
 
@@ -43,6 +43,13 @@ Page({
 
         somewhere_temperature: 0.0, // 任意地方温度
         somewhere_humidity: 0.0, // 任意地方湿度
+    },
+
+    // Weather Swiper Change Handler
+    onWeatherSwiperChange(e) {
+        this.setData({
+            currentWeatherIndex: e.detail.current
+        });
     },
 
     // 转换函数
@@ -176,7 +183,7 @@ Page({
             humidity_downvalue: 0, // 湿度下限
             soil_humidity_upvalue: 0, // 土壤湿度上限
             soil_humidity_downvalue: 0, // 土壤湿度下限
-            cogas_value: 0, // 一氧化碳浓度
+            cogas_value: 0, // 二氧化碳浓度
             smoggas_value: 0, // 烟雾浓度
 
             bird: 0, // 鸟

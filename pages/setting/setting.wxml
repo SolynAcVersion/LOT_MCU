@@ -1,215 +1,182 @@
 <!--pages/setting/setting.wxml-->
-
-<view class="page-container">
-    <view class="data_setting">
-        <!-- 大棚参数设置 -->
-        <view class="data_card">
-            <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/warmhouse.png" />
-                <view class="data_card_title">
-                    大棚参数设置
-                </view>
-            </view>
-
-            <view class="values_container">
-                <view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/corp.png" />
-                        <view class="card_title">
-                            农作物种植种类
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入农作物种植的种类" bindinput="handleInput" data-type="corpType" />
-                    </view>
-                </view>
-
-                <view class="data_card_min">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/time.png" />
-                        <view class="data_card_title">
-                            参数更新间隔
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入参数更新的间隔" bindinput="handleInput" data-type="updata_time" />
-                        <text>s</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-
-        <!-- 温度阈值设置 -->
-        <view class="data_card">
-            <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperaturesetting.png" />
-                <view class="data_card_title">
-                    温度阈值设置
-                </view>
-            </view>
-
-            <view class="values_container">
-                <view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/maxvalue.png" />
-                        <view class="card_title">
-                            温度最高值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入温度上限值" bindinput="handleInput" data-type="temperature_upvalue" />
-                        <text>℃</text>
-                    </view>
-                </view>
-
-                <view class="data_card_min">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/minvalue.png" />
-                        <view class="data_card_title">
-                            温度最低值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入温度下限值" bindinput="handleInput" data-type="temperature_downvalue" />
-                        <text>℃</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-        
-        <!-- 湿度设置 -->
-        <view class="data_card">
-             <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humiditysetting.png" />
-                <view class="data_card_title">
-                    湿度阈值设置
-                </view>
-            </view>
-	    <view class="values_container">
-            	<view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/maxvalue.png" />
-                        <view class="card_title">
-                            湿度最高值
-                        </view>
-                    </view>
-
-                	<view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入湿度上限值" bindinput="handleInput" data-type="humidity_upvalue" />
-                        <text>%</text>
-                    </view>
-                </view>
-                    <view class="data_card_min">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/minvalue.png" />
-                        <view class="data_card_title">
-                            湿度最低值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入湿度下限值" bindinput="handleInput" data-type="humidity_downvalue" />
-                        <text>%</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-
-        <!-- 土壤湿度设置 -->
-        <view class="data_card">
-            <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humiditysetting.png" />
-                <view class="data_card_title">
-                    土壤湿度阈值设置
-                </view>
-            </view>
-
-            <view class="values_container">
-                <view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/maxvalue.png" />
-                        <view class="card_title">
-                            土壤湿度最高值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入土壤湿度上限值" bindinput="handleInput" data-type="soil_humidity_upvalue" />
-                        <text>%</text>
-                    </view>
-                </view>
-
-                <view class="data_card_min">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/minvalue.png" />
-                        <view class="data_card_title">
-                            土壤湿度最低值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入土壤湿度下限值" bindinput="handleInput" data-type="soil_humidity_downvalue" />
-                        <text>%</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-
-       <!-- 一氧化碳浓度设置 -->
-       <view class="data_card">
-            <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/cosetting.png" />
-                <view class="data_card_title">
-                    一氧化碳浓度阈值设置
-                </view>
-            </view>
-
-            <view class="alone_values_container">
-                <view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/maxvalue.png" />
-                        <view class="alone_card_title">
-                            一氧化碳浓度最高值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入一氧化碳浓度上限值" bindinput="handleInput" data-type="cogas_value" />
-                        <text>ppm</text>
-                    </view>
-                </view>
-            </view>
-        </view>
-
-        <!-- 烟雾浓度设置 -->
-        <view class="data_card">
-            <view class="title_container">
-                <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/smoggassetting.png" />
-                <view class="data_card_title">
-                    烟雾浓度阈值设置
-                </view>
-            </view>
-
-            <view class="alone_values_container">
-                <view class="data_card_max">
-                    <view class="title-with-icon">
-                        <image class="data_card_value" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/maxvalue.png" />
-                        <view class="alone_card_title">
-                           烟雾浓度最高值
-                        </view>
-                    </view>
-
-                    <view class="input-container">
-                        <input class="input-field" type="digit" placeholder="请输入烟雾浓度上限值" bindinput="handleInput" data-type="smoggas_value" />
-                        <text>ppm</text>
-                    </view>
-                </view>
-            </view>
-        </view>
+<view class="bg-background-light min-h-screen pb-24">
+  <!-- Header -->
+  <view class="bg-surface-light px-4 py-4 sticky top-0 z-40 shadow-sm flex items-center justify-between">
+    <view class="w-20"></view>
+    <view class="text-lg font-bold text-center flex-1">数据阈值设置</view>
+    <view class="w-20 flex justify-end">
     </view>
-    <button class="submit" type="primary" bindtap="dataUpload" disabled="{{!isButtonActive}}">确 认</button>
+  </view>
+
+  <view class="p-4 space-y-6 max-w-md mx-auto">
+    <!-- Section: Greenhouse Params -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-green-100 p-1.5 rounded-lg text-green-500">
+           <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/corp.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">大棚参数设置</view>
+      </view>
+      <view class="grid grid-cols-2 gap-3">
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft border border-gray-100">
+          <view class="flex items-center gap-2 mb-2">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/corp.png" class="w-5 h-5" />
+            <view class="text-sm font-medium">农作物种类</view>
+          </view>
+          <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4" placeholder="输入种类" type="text" value="{{corpType}}" data-type="corpType" bindinput="handleInput" />
+        </view>
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft border border-gray-100">
+          <view class="flex items-center gap-2 mb-2">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/time.png" class="w-5 h-5" />
+            <view class="text-sm font-medium">更新间隔</view>
+          </view>
+          <view class="relative">
+            <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="输入秒数" type="number" value="{{updata_time}}" data-type="updata_time" bindinput="handleInput" />
+            <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">s</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section: Temperature Threshold -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-red-50 p-1.5 rounded-lg text-red-500">
+           <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperature.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">温度阈值设置</view>
+      </view>
+      <view class="bg-surface-light p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col gap-4">
+        <view class="flex items-center justify-between gap-4">
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+              <view class="text-red-400 text-sm">↑</view> 最高值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="上限" type="number" value="{{temperature_upvalue}}" data-type="temperature_upvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">℃</view>
+            </view>
+          </view>
+          <view class="w-1px h-10 bg-gray-100"></view>
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+               <view class="text-blue-400 text-sm">↓</view> 最低值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="下限" type="number" value="{{temperature_downvalue}}" data-type="temperature_downvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">℃</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section: Humidity Threshold -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-blue-50 p-1.5 rounded-lg text-blue-500">
+          <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidity.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">湿度阈值设置</view>
+      </view>
+      <view class="bg-surface-light p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col gap-4">
+        <view class="flex items-center justify-between gap-4">
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+               <view class="text-blue-400 text-sm">↑</view> 最高值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="上限" type="number" value="{{humidity_upvalue}}" data-type="humidity_upvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">%</view>
+            </view>
+          </view>
+          <view class="w-1px h-10 bg-gray-100"></view>
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+               <view class="text-blue-300 text-sm">↓</view> 最低值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="下限" type="number" value="{{humidity_downvalue}}" data-type="humidity_downvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">%</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section: Soil Humidity Threshold -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-amber-50 p-1.5 rounded-lg text-amber-600">
+           <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humidity.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">土壤湿度阈值</view>
+      </view>
+      <view class="bg-surface-light p-5 rounded-2xl shadow-soft border border-gray-100 flex flex-col gap-4">
+        <view class="flex items-center justify-between gap-4">
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+               <view class="text-amber-500 text-sm">↑</view> 最高值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="上限" type="number" value="{{soil_humidity_upvalue}}" data-type="soil_humidity_upvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">%</view>
+            </view>
+          </view>
+          <view class="w-1px h-10 bg-gray-100"></view>
+          <view class="flex-1">
+            <view class="block text-xs font-medium text-text-sub-light mb-1.5 flex items-center gap-1">
+               <view class="text-amber-400 text-sm">↓</view> 最低值
+            </view>
+            <view class="relative">
+              <input class="w-full text-sm bg-gray-50 rounded-lg h-10 px-4 pr-8" placeholder="下限" type="number" value="{{soil_humidity_downvalue}}" data-type="soil_humidity_downvalue" bindinput="handleInput" />
+              <view class="absolute right-3 top-2-5 text-xs text-text-sub-light">%</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section: CO2 -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-gray-200 p-1.5 rounded-lg text-gray-600">
+           <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/cogas.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">二氧化碳浓度设置</view>
+      </view>
+      <view class="bg-surface-light p-5 rounded-2xl shadow-soft border border-gray-100">
+        <view class="block text-sm font-medium text-text-sub-light mb-2">浓度最高值</view>
+        <view class="relative">
+          <input class="w-full text-sm bg-gray-50 rounded-lg h-12 px-4 pr-12" placeholder="请输入二氧化碳浓度上限" type="number" value="{{cogas_value}}" data-type="cogas_value" bindinput="handleInput" />
+          <view class="absolute right-4 top-3 text-sm text-text-sub-light font-medium">ppm</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Section: Smoke -->
+    <view class="mb-4">
+      <view class="flex items-center gap-2 mb-3 px-1">
+        <view class="bg-purple-50 p-1.5 rounded-lg text-purple-600">
+           <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/smoggas.png" class="w-6 h-6" />
+        </view>
+        <view class="text-base font-semibold">烟雾浓度设置</view>
+      </view>
+      <view class="bg-surface-light p-5 rounded-2xl shadow-soft border border-gray-100">
+        <view class="block text-sm font-medium text-text-sub-light mb-2">浓度最高值</view>
+        <view class="relative">
+          <input class="w-full text-sm bg-gray-50 rounded-lg h-12 px-4 pr-12" placeholder="请输入烟雾浓度上限" type="number" value="{{smoggas_value}}" data-type="smoggas_value" bindinput="handleInput" />
+          <view class="absolute right-4 top-3 text-sm text-text-sub-light font-medium">ppm</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Submit Button -->
+    <view class="mt-8 mb-4">
+      <button class="w-full bg-primary text-white font-bold py-3 px-6 rounded-xl shadow-lg flex justify-center items-center gap-2 hover:opacity-90 active:scale-95 transition-transform" bindtap="dataUpload">
+        <image src="/static/home(green).png" class="w-6 h-6 filter invert" />
+        <view>确认设置</view>
+      </button>
+    </view>
+  </view>
 </view>
