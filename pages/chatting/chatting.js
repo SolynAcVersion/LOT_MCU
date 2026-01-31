@@ -25,7 +25,7 @@ Page({
             },
             {
                 type: 'chatting',
-                icon: 'https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/chatting.png',
+                icon: '/static/chatting(black).png',
                 text: '删除聊天记录'
               }
           ],

@@ -1,64 +1,99 @@
 <!--pages/users/users.wxml-->
+<view class="bg-background-light min-h-screen pb-24 relative">
+  <!-- Header Gradient -->
+  <view class="bg-gradient-to-b from-blue-500 to-primary h-64 rounded-b-3xl relative overflow-hidden shadow-lg">
+    <view class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full transform translate-x-1-2 -translate-y-1-2"></view>
+    <view class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full transform -translate-x-1-3 translate-y-1-3"></view>
+    <view class="pt-12 px-6 flex justify-between items-center text-white">
+      <view class="text-xl font-semibold tracking-wide mx-auto">个人中心</view>
+    </view>
+  </view>
 
-<view class="top-bg"></view>
-
-<view class="box">
-    <view class="head-box">
-        <button open-type="chooseAvatar" class="avatar" bindchooseavatar="chooseAvatar">
-            <image class="head-img" src="{{login.avatar}}" mode="widthFix"></image>
+  <view class="px-5 -mt-20 relative z-10">
+    <!-- User Card -->
+    <view class="bg-surface-light rounded-3xl shadow-lg p-6 flex flex-col items-center mb-6">
+      <view class="relative -mt-16 mb-4">
+        <button class="w-24 h-24 rounded-full border-4 border-white shadow-md bg-blue-100 flex items-center justify-center overflow-hidden p-0" open-type="chooseAvatar" bindchooseavatar="chooseAvatar">
+           <image wx:if="{{login.show}}" class="w-full h-full object-cover" src="{{login.avatar}}"></image>
+           <image wx:else class="w-12 h-12 opacity-50" src="/static/user(black).png"></image>
         </button>
-        <view class="tip">{{login.show?'欢迎使用':'当前未登录，请登录！'}}</view>
+        <view class="absolute bottom-0 right-0 bg-edit-icon text-white p-1.5 rounded-full shadow-md flex items-center justify-center" style="width: 56rpx; height: 56rpx;">
+            <image src="/static/setting(black).png" class="w-4 h-4 filter invert" />
         </view>
-    <view>
+      </view>
+      <view class="text-lg font-bold text-text-main-light mb-1">{{login.show ? '已登录用户' : '未登录用户'}}</view>
+      <view class="text-text-sub-light text-sm">{{login.show ? '欢迎回来' : '当前未登录，请登录以享受完整服务'}}</view>
+    </view>
 
-    <button class="row" style="width: 100%;" bindtap="basicClick">
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">基本信息</text>
+    <!-- Menu List -->
+    <view class="bg-surface-light rounded-3xl shadow-sm overflow-hidden">
+      <!-- Basic Info -->
+      <view class="group flex items-center p-4 hover-bg-gray-50 border-b border-gray-100 last-border-0" bindtap="basicClick">
+        <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary mr-4">
+           <image src="/static/user(black).png" class="w-6 h-6 icon-neutral" />
         </view>
-        <view class="right">》</view>
-    </button>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">基本信息</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
 
-    <button class="row" style="width: 100%;" bindtap="feedbackClick">
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">匿名反馈</text>
+      <!-- Feedback -->
+      <view class="group flex items-center p-4 hover-bg-gray-50 border-b border-gray-100 last-border-0" bindtap="feedbackClick">
+        <view class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 mr-4">
+           <image src="/static/chatting(black).png" class="w-6 h-6 icon-neutral" />
         </view>
-        <view class="right">》</view>
-    </button>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">匿名反馈</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
 
-    <button class="row" style="width: 100%;border-bottom: none;" bindtap="aboutClick">
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">关于我们</text>
+      <!-- About Us -->
+      <view class="group flex items-center p-4 hover-bg-gray-50 border-b border-gray-100 last-border-0" bindtap="aboutClick">
+        <view class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500 mr-4">
+           <image src="/static/home(black).png" class="w-6 h-6 icon-neutral" />
         </view>
-        <view class="right">》</view>
-    </button>
-</view>
-</view>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">关于我们</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
 
-<view class="end">
-    <button open-type="share" class="row" style="width: 100%;">
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">分享好友</text>
+      <!-- Share -->
+      <view class="group flex items-center p-4 hover-bg-gray-50 border-b border-gray-100 last-border-0 relative">
+        <button open-type="share" class="absolute top-0 left-0 w-full h-full opacity-0" style="opacity: 0; z-index: 10;"></button>
+        <view class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 mr-4">
+           <image src="/static/corn.png" class="w-6 h-6" style="filter: grayscale(100%); opacity: 0.6;" />
         </view>
-        <view class="right">》</view>
-  </button>
-</view>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">分享好友</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
 
-<view class="end">
-    <button wx:if="{{login.line}}" bindtap="exitClick" class="row" style="width: 100%;border-bottom: none;">
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">退出登录</text>
+      <!-- Login/Logout -->
+      <view class="group flex items-center p-4 hover-bg-gray-50" bindtap="exitClick" wx:if="{{login.show}}">
+        <view class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 mr-4">
+           <image src="/static/setting(black).png" class="w-6 h-6 icon-neutral" />
         </view>
-    </button>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">退出登录</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
+      
+       <!-- Login -->
+       <view class="group flex items-center p-4 hover-bg-gray-50" wx:if="{{!login.show}}">
+        <view class="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-500 mr-4">
+           <image src="/static/user(black).png" class="w-6 h-6 icon-neutral" />
+        </view>
+        <view class="flex-1">
+          <view class="font-medium text-text-main-light">立即登录</view>
+        </view>
+        <view class="text-gray-300 text-xl">></view>
+      </view>
 
-    <button class="row" open-type="chooseAvatar" bindchooseavatar="chooseAvatar" style="width: 100%;border-bottom: none;" wx:else>
-        <view class="left">
-            <icon class="icon-small" type="success" size="16"></icon>
-            <text class="text">立即登录</text>
-        </view>
-  </button>
+    </view>
+  </view>
 </view>

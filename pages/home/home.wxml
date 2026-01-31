@@ -1,466 +1,297 @@
 <!--pages/home/home.wxml-->
+<view class="bg-background-light min-h-screen pb-32">
+  <!-- Header -->
+  <view class="px-4 py-3 flex items-center justify-between sticky top-0 z-10 bg-background-light-80 backdrop-blur-md">
+    <view class="text-lg font-bold truncate flex-1 text-center">智能温室大棚管理系统</view>
+  </view>
 
-<view class="page-container">
-    <!-- 天气部分 -->
-    <swiper class="swiper" indicator-dots="true" autoplay="true" interval="5000" duration="500" bindchange="bindchange">
-        <block wx:for="{{pages}}" wx:key="unique">
-            <swiper-item class="swiper-item">
-                <view class="content {{current == index ? 'active' : ''}}">
-                <!-- 第1页内容 -->
-                    <block wx:if="{{index == 0}}">
-                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
-                            <view class="header-position">
-                                <view>当前位置：{{weatherInfo.location.name}}</view>
-                            </view>
-
-                            <view class="header-temperature">
-                                <view>当前温度：{{weatherInfo.daily[0].low}} - {{weatherInfo.daily[0].high}}℃</view>
-                            </view>
-
-                            <view class="header-phenomena">
-                                <view>当前天气：{{weatherInfo.daily[0].text_day}}到{{weatherInfo.daily[0].text_night}}</view>
-                            </view>
-
-                            <view class="header-humidity">
-                                <view>当前相对湿度：{{weatherInfo.daily[0].humidity}}%</view>
-                            </view>
-
-                            <view class="header-rainfall">
-                                <view>当前降水量：{{weatherInfo.daily[0].rainfall}}mm</view>
-                            </view>
-                        </view>
-                    </block>
-
-                <!-- 第2页内容 -->
-                    <block wx:if="{{index == 1}}">
-                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
-                            <view class="header-position">
-                                <view>当前位置：{{weatherInfo.location.name}}</view>
-                            </view>
-
-                            <view class="header-temperature">
-                                <view>明天温度：{{weatherInfo.daily[1].low}} - {{weatherInfo.daily[1].high}}℃</view>
-                            </view>
-
-                            <view class="header-phenomena">
-                                <view>明天天气：{{weatherInfo.daily[1].text_day}}到{{weatherInfo.daily[1].text_night}}</view>
-                            </view>
-
-                            <view class="header-humidity">
-                                <view>明天相对湿度：{{weatherInfo.daily[1].humidity}}%</view>
-                            </view>
-
-                            <view class="header-rainfall">
-                                <view>明天降水量：{{weatherInfo.daily[1].rainfall}}mm</view>
-                            </view>
-                        </view>
-                    </block>
-
-                <!-- 第3页内容 -->
-                    <block wx:if="{{index == 2}}">
-                        <view class="content-view" style="border-radius: 30rpx; background-color: #3d7ef5;">
-                            <view class="header-position">
-                                <view>当前位置：{{weatherInfo.location.name}}</view>
-                            </view>
-
-                            <view class="header-temperature">
-                                <view>后天温度：{{weatherInfo.daily[2].low}} - {{weatherInfo.daily[2].high}}℃</view>
-                            </view>
-
-                            <view class="header-phenomena">
-                                <view>后天天气：{{weatherInfo.daily[2].text_day}}到{{weatherInfo.daily[2].text_night}}</view>
-                            </view>
-
-                            <view class="header-humidity">
-                                <view>后天相对湿度：{{weatherInfo.daily[2].humidity}}%</view>
-                            </view>
-
-                            <view class="header-rainfall">
-                                <view>后天降水量：{{weatherInfo.daily[2].rainfall}}mm</view>
-                            </view>
-                        </view>
-                    </block>
+  <view class="px-4 space-y-6 mt-2">
+    <!-- Weather Swiper Card -->
+    <view class="bg-primary text-white rounded-2xl shadow-soft relative overflow-hidden mb-4">
+      <view class="absolute -top-10 -right-10 w-40 h-40 bg-white-10 rounded-full blur-2xl"></view>
+      
+      <swiper 
+        class="h-48" 
+        current="{{currentWeatherIndex}}" 
+        bindchange="onWeatherSwiperChange"
+        circular="{{false}}"
+        indicator-dots="{{false}}"
+      >
+        <block wx:for="{{weatherInfo.daily}}" wx:key="date">
+          <swiper-item>
+             <view class="p-6 h-full box-border relative z-10 flex flex-col justify-between">
+                <!-- Top Row: Location & Date -->
+                <view class="flex items-center justify-between text-blue-100">
+                   <view class="flex items-center gap-2">
+                      <image src="/static/home(black).png" class="w-4 h-4 opacity-70 filter invert" />
+                      <view class="text-sm font-medium truncate max-w-[200rpx]">当前位置：{{weatherInfo.location.name || '温室一区'}}</view>
+                   </view>
+                   <view class="text-xs font-bold bg-white-10 px-3 py-1 rounded-full border border-white-10">
+                      {{index === 0 ? '今天' : (index === 1 ? '明天' : '后天')}}
+                   </view>
                 </view>
-            </swiper-item>
+
+                <!-- Middle Row: Temp & Icon -->
+                <view class="flex items-center justify-between mt-1">
+                   <view>
+                      <view class="text-4xl font-bold tracking-tight">
+                         {{item.low || 15}} - {{item.high || 25}}°C
+                      </view>
+                      <view class="text-sm text-blue-50 mt-1 flex items-center gap-2">
+                        <text>{{item.text_day || '晴'}}</text>
+                        <text class="opacity-60">|</text>
+                        <text>{{item.wind_direction || '无'}}风 {{item.wind_scale || '1'}}级</text>
+                      </view>
+                   </view>
+                   <view class="flex flex-col items-center justify-center bg-white-10 p-2 rounded-xl">
+                      <!-- Weather Icon (External) -->
+                      <image src="https://raw.githubusercontent.com/seniverse/seniverse-api-docs/master/media/weather-icons/{{item.code_day || 0}}@1x.png" class="w-10 h-10 mb-1" mode="aspectFit" />
+                   </view>
+                </view>
+
+                <!-- Bottom Row: Details -->
+                <view class="flex gap-6 text-sm text-blue-50 mt-2">
+                   <view class="flex items-center gap-1">
+                      <text class="opacity-80">湿度</text>
+                      <text class="font-bold">{{item.humidity || 0}}%</text>
+                   </view>
+                   <view class="flex items-center gap-1">
+                      <text class="opacity-80">降水</text>
+                      <text class="font-bold">{{item.rainfall || 0}}mm</text>
+                   </view>
+                </view>
+             </view>
+          </swiper-item>
         </block>
-    </swiper>
-
-    <!-- 大棚设置 -->
-    <view class="threshoil_title">
-        <text>大棚参数</text>
+      </swiper>
     </view>
 
-    <!-- 设置部分 -->
-    <view class="data">
-        <!-- 农作物 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/corp.png" />
-            <view>
-                <view class="data_card_title">
-                    种植类型
-                </view>
-                <view class="data_card_corp_value">
-                    {{cropType}}
-                </view>
-            </view>
-        </view>
-
-        <!-- 更新间隔 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/time.png" />
-            <view>
-                <view class="data_card_title">
-                    更新间隔
-                </view>
-                <view class="data_card_value">
-                    {{updata_time}}s
-                </view>
-            </view>
-        </view>
+    <!-- Dots -->
+    <view class="flex justify-center gap-2 mb-4">
+       <block wx:for="{{weatherInfo.daily}}" wx:key="index">
+          <view class="h-2 rounded-full transition-all duration-300 {{currentWeatherIndex === index ? 'bg-primary w-6' : 'bg-gray-300 w-2'}}"></view>
+       </block>
     </view>
 
-    <!-- 环境数据 -->
-    <view class="threshoil_title">
-        <text>环境数据</text>
+    <!-- Section: Greenhouse Params -->
+    <view class="mb-4">
+      <view class="text-xl font-bold mb-4 flex items-center gap-2">
+        <view class="w-1 h-6 bg-primary rounded-full"></view>
+        大棚参数
+      </view>
+      <view class="grid grid-cols-2 gap-4">
+        <!-- Crop Type -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/corp.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">种植类型</view>
+            <view class="text-lg font-bold text-text-sub-light">{{cropType}}</view>
+          </view>
+        </view>
+        <!-- Update Interval -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/time.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">更新间隔</view>
+            <view class="text-lg font-bold">{{updata_time}}s</view>
+          </view>
+        </view>
+      </view>
     </view>
 
-    <!-- 数据部分 -->
-    <view class="data">
-        <!-- 温度 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperature.png" />
-            <view>
-                <view class="data_card_title">
-                    温度
-                </view>
-                <view class="data_card_value">
-                    {{temperature}}℃
-                </view>
-            </view>
+    <!-- Section: Environment Data -->
+    <view class="mb-4">
+      <view class="text-xl font-bold mb-4 flex items-center gap-2">
+        <view class="w-1 h-6 bg-primary rounded-full"></view>
+        环境数据
+      </view>
+      <view class="grid grid-cols-2 gap-4">
+        <!-- Temperature -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperature.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">温度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{temperature}}<text class="text-sm align-top">°C</text></view>
+          </view>
         </view>
-
-        <!-- 湿度 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidity.png" />
-            <view>
-                <view class="data_card_title">
-                    湿度
-                </view>
-                <view class="data_card_value">
-                    {{humidity}}%
-                </view>
-            </view>
+        <!-- Humidity -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidity.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">湿度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{humidity}}<text class="text-sm align-top">%</text></view>
+          </view>
         </view>
-
-        <!-- 土壤湿度 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humidity.png" />
-            <view>
-                <view class="data_card_title">
-                    土壤湿度
-                </view>
-                <view class="data_card_value">
-                    {{soil_humidity}}%
-                </view>
-            </view>
+        <!-- Soil Humidity -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humidity.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">土壤湿度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{soil_humidity}}<text class="text-sm align-top">%</text></view>
+          </view>
         </view>
-
-        <!-- 一氧化碳浓度 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/cogas.png" />
-            <view>
-                <view class="data_card_title">
-                    CO浓度
-                </view>
-                <view class="data_card_value">
-                    {{cogas}}p
-                </view>
-            </view>
+        <!-- CO Gas -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/cogas.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">二氧化碳浓度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{cogas}}<text class="text-sm align-top">ppm</text></view>
+          </view>
         </view>
-
-        <!-- 烟雾浓度 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/smoggas.png" />
-            <view>
-                <view class="data_card_title">
-                    烟雾浓度
-                </view>
-                <view class="data_card_value">
-                    {{smoggas}}p
-                </view>
-            </view>
+        <!-- Smog Gas -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/smoggas.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">烟雾浓度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{smoggas}}<text class="text-sm align-top">p</text></view>
+          </view>
         </view>
-
-        <!-- 火焰 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/fire.png" />
-            <view>
-                <view class="data_card_title">
-                    火焰
-                </view>
-                <view class="data_card_value">
-                    {{ fire === 0 ? '有火' : '无火' }}
-                </view>
-            </view>
+        <!-- Fire -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/fire.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">火焰</view>
+            <view class="text-xl font-bold text-text-sub-light">{{fire === 0 ? '有火' : '无火'}}</view>
+          </view>
         </view>
+      </view>
     </view>
 
-    <!-- 设备控制 -->
-    <view class="threshoil_title">
-        <text>设备控制</text>
+    <!-- Section: Device Control -->
+    <view class="mb-4">
+      <view class="text-xl font-bold mb-4 flex items-center gap-2">
+        <view class="w-1 h-6 bg-primary rounded-full"></view>
+        设备控制
+      </view>
+      <view class="grid grid-cols-2 gap-4">
+        <!-- Fan -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex flex-col justify-between h-24 relative">
+          <view class="flex justify-between items-start">
+            <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+              <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/fan.png" class="w-6 h-6" />
+            </view>
+            <view class="text-sm font-medium text-text-sub-light">风扇</view>
+          </view>
+          <view class="self-end mt-2">
+            <switch checked="{{fan}}" bindchange="handleFanSwitchChange" color="#3B82F6" />
+          </view>
+        </view>
+        <!-- Heater -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex flex-col justify-between h-24 relative">
+          <view class="flex justify-between items-start">
+            <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+              <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/heat.png" class="w-6 h-6" />
+            </view>
+            <view class="text-sm font-medium text-text-sub-light">加热器</view>
+          </view>
+          <view class="self-end mt-2">
+            <switch checked="{{heat}}" bindchange="handleHeatSwitchChange" color="#3B82F6" />
+          </view>
+        </view>
+        <!-- Humidifier -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex flex-col justify-between h-24 relative">
+          <view class="flex justify-between items-start">
+            <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+              <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidification.png" class="w-6 h-6" />
+            </view>
+            <view class="text-sm font-medium text-text-sub-light">加湿器</view>
+          </view>
+          <view class="self-end mt-2">
+            <switch checked="{{humidification}}" bindchange="handleHumidificationSwitchChange" color="#3B82F6" />
+          </view>
+        </view>
+        <!-- Pump Out (Using pumpout variable) -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex flex-col justify-between h-24 relative">
+          <view class="flex justify-between items-start">
+            <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+              <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/pumpin.png" class="w-6 h-6" />
+            </view>
+            <view class="text-sm font-medium text-text-sub-light">水泵</view>
+          </view>
+          <view class="self-end mt-2">
+            <switch checked="{{pumpout}}" bindchange="handlePumpoutSwitchChange" color="#3B82F6" />
+          </view>
+        </view>
+      </view>
     </view>
 
-    <view class="data">
-        <!-- 风扇 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/fan.png" />
-            <view>
-                <view class="data_card_title">
-                    风扇
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{fan}}" bindchange="handleFanSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
+    <!-- Section: Other Devices -->
+    <view class="mb-4">
+      <view class="text-xl font-bold mb-4 flex items-center gap-2">
+        <view class="w-1 h-6 bg-primary rounded-full"></view>
+        其他设备
+      </view>
+      <view class="grid grid-cols-2 gap-4">
+        <!-- Any Temp -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperature.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">任意温度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{somewhere_temperature}}<text class="text-sm align-top">°C</text></view>
+          </view>
         </view>
-
-        <!-- 加热器 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/heat.png" />
-            <view>
-                <view class="data_card_title">
-                    加热器
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{heat}}" bindchange="handleHeatSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
+        <!-- Any Humidity -->
+        <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+          <view class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+            <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidity.png" class="w-6 h-6" />
+          </view>
+          <view class="text-right">
+            <view class="text-xs text-text-sub-light">任意湿度</view>
+            <view class="text-2xl font-bold text-text-sub-light">{{somewhere_humidity}}<text class="text-sm align-top">%</text></view>
+          </view>
         </view>
-
-        <!-- 加湿器 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humidification.png" />
-            <view>
-                <view class="data_card_title">
-                    加湿器
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{humidification}}" bindchange="handleHumidificationSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
-        </view>
-
-        <!-- 水泵 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/pumpin.png" />
-            <view>
-                <view class="data_card_title">
-                    水泵
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{pumpout}}" bindchange="handlePumpoutSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
-        </view>
-
-        <!-- 抽水泵 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/pumpout.png" />
-            <view>
-                <view class="data_card_title">
-                    抽水器
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{pumpin}}" bindchange="handlePumpinSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
-        </view>
-
-        <!-- 蜂鸣器 -->
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/buzzer.png" />
-            <view>
-                <view class="data_card_title">
-                    蜂鸣器
-                </view>
-                <view class="data_card_value">
-                    <switch checked="{{buzzer}}" bindchange="handleBuzzerSwitchChange" color="#3d7ef5" />
-                </view>
-            </view>
-        </view>
+        <!-- Add Device Button -->
+        <navigator url="/pages/add/add" class="col-span-1 bg-surface-light p-4 rounded-2xl shadow-soft flex items-center gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+          <view class="w-10 h-10 rounded-full border-2 border-primary border-dashed flex items-center justify-center text-primary">
+            <image src="/static/home(green).png" class="w-6 h-6" />
+          </view>
+          <view class="text-sm font-bold text-text-sub-light">添加设备</view>
+        </navigator>
+      </view>
     </view>
 
-    <!-- 设备阈值查看 -->
-    <view class="threshoil_title">
-        <text>设备阈值</text>
+    <!-- Section: Info Alerts -->
+    <view class="mb-4">
+      <view class="text-xl font-bold mb-4 flex items-center gap-2">
+        <view class="w-1 h-6 bg-primary rounded-full"></view>
+        信息预警
+      </view>
+      <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between mb-4">
+        <view class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+          <image src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/buzzer.png" class="w-8 h-8" />
+        </view>
+        <view class="text-right">
+          <view class="text-xs text-text-sub-light">鸟</view>
+          <view class="text-xl font-bold text-text-sub-light">{{bird ? '有鸟' : '无鸟'}}</view>
+        </view>
+      </view>
+      <view class="bg-surface-light p-4 rounded-2xl shadow-soft flex items-center justify-between">
+        <view class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+          <image src="/static/corn.png" class="w-8 h-8" />
+        </view>
+        <view class="text-right">
+          <view class="text-xs text-text-sub-light">病虫害</view>
+          <view class="text-xl font-bold text-text-sub-light">{{waringType}}</view>
+        </view>
+      </view>
     </view>
-    
-    <view class="data">
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperaturesetting.png" />
-            <view>
-                <view class="data_card_title">
-                    温度上限
-                </view>
-                <view class="data_card_value">
-                    {{temperature_upvalue}}℃
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/temperaturesetting.png" />
-            <view>
-                <view class="data_card_title">
-                    温度下限
-                </view>
-                <view class="data_card_value">
-                    {{temperature_downvalue}}℃
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humiditysetting.png" />
-            <view>
-                <view class="data_card_title">
-                    湿度上限
-                </view>
-                <view class="data_card_value">
-                    {{humidity_upvalue}}%
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/humiditysetting.png" />
-            <view>
-                <view class="data_card_title">
-                    湿度下限
-                </view>
-                <view class="data_card_value">
-                    {{humidity_downvalue}}%
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humiditysetting.png" />
-            <view>
-                <view class="data_card_title">
-                    土湿上限
-                </view>
-                <view class="data_card_value">
-                    {{soil_humidity_upvalue}}%
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/soil_humiditysetting.png" />
-            <view>
-                <view class="data_card_title">
-                    土湿下限
-                </view>
-                <view class="data_card_value">
-                    {{soil_humidity_downvalue}}%
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/cosetting.png" />
-            <view>
-                <view class="data_card_title">
-                    CO上限
-                </view>
-                <view class="data_card_value">
-                    {{cogas_value}}p
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/smoggassetting.png" />
-            <view>
-                <view class="data_card_title">
-                    烟雾上限
-                </view>
-                <view class="data_card_value">
-                    {{smoggas_value}}p
-                </view>
-            </view>
-        </view>
-    </view>
-
-    <!-- 鸟类识别 -->
-    <view class="threshoil_title">
-        <text>信息预警</text>
-    </view>
-
-    <view class="waring_data">
-        <view class="waring_card">
-            <image class="waring_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/bird.png" />
-            <view>
-                <view class="waring_card_title">
-                    鸟
-                </view>
-                <view class="waring_card_value">
-                    {{ bird === 1 ? '有鸟' : '无鸟' }}
-                </view>
-            </view>
-        </view>
-
-        <view class="waring_card">
-            <image class="waring_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/waring.png" />
-            <view>
-                <view class="waring_card_title">
-                    病虫害
-                </view>
-                <view class="waring_card_value">
-                    {{waringType}}
-                </view>
-            </view>
-        </view>
-    </view>
-
-    <!-- 其他设备 -->
-    <view class="threshoil_title">
-        <text>其他设备</text>
-    </view>
-
-    <view class="data">
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/somewhere_temperature.png" />
-            <view>
-                <view class="data_card_title">
-                    任意温度
-                </view>
-                <view class="data_card_value">
-                    {{somewhere_temperature}}℃
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/somewhere_humidity.png" />
-            <view>
-                <view class="data_card_title">
-                    任意湿度
-                </view>
-                <view class="data_card_value">
-                    {{somewhere_humidity}}%
-                </view>
-            </view>
-        </view>
-
-        <view class="data_card" bindtap="onAddDevice">
-            <image class="data_card_icon" src="https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/add.png" />
-            <view>
-                <view class="add_card_title">
-                    添加设备
-                </view>
-            </view>
-        </view>
-    </view>
+  </view>
 </view>
