@@ -1,0 +1,76 @@
+<!-- 聊天页面图标组件 -->
+
+<!-- 1. 麦克风图标（录音按钮） -->
+<template name="icon-microphone">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg {{recording ? 'recording' : ''}}">
+      <rect x="9" y="2" width="6" height="11" rx="2" ry="2" fill="{{color}}" />
+      <path d="M5 10a7 7 0 0 1 14 0" stroke="{{color}}" stroke-width="2" fill="none" />
+      <line x1="8" y1="18" x2="16" y2="18" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+      <line x1="12" y1="18" x2="12" y2="22" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </view>
+</template>
+
+<!-- 2. 停止图标（停止录音） -->
+<template name="icon-stop">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <rect x="6" y="6" width="12" height="12" rx="2" fill="{{color}}" />
+    </svg>
+  </view>
+</template>
+
+<!-- 3. 发送图标（发送消息） -->
+<template name="icon-send">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <line x1="22" y1="2" x2="11" y2="13" stroke="{{color}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" fill="{{color}}" />
+    </svg>
+  </view>
+</template>
+
+<!-- 4. 加号图标（展开功能面板） -->
+<template name="icon-plus">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <line x1="12" y1="5" x2="12" y2="19" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+      <line x1="5" y1="12" x2="19" y2="12" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </view>
+</template>
+
+<!-- 5. 照片图标（选择图片） -->
+<template name="icon-photo">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="{{color}}" stroke-width="2" fill="none" />
+      <circle cx="8.5" cy="8.5" r="1.5" fill="{{color}}" />
+      <polyline points="21 15 16 10 5 21" stroke="{{color}}" stroke-width="2" fill="none" stroke-linejoin="round" />
+    </svg>
+  </view>
+</template>
+
+<!-- 6. 相机图标（拍摄） -->
+<template name="icon-camera">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="{{color}}" stroke-width="2" fill="none" />
+      <circle cx="12" cy="13" r="4" stroke="{{color}}" stroke-width="2" fill="none" />
+      <circle cx="12" cy="13" r="2" fill="{{color}}" />
+    </svg>
+  </view>
+</template>
+
+<!-- 7. 删除图标（清空记录） -->
+<template name="icon-delete">
+  <view class="icon-wrapper {{class}}">
+    <svg viewBox="0 0 24 24" width="{{size}}" height="{{size}}" class="icon-svg">
+      <polyline points="3 6 5 6 21 6" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="{{color}}" stroke-width="2" fill="none" />
+      <line x1="10" y1="11" x2="10" y2="17" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+      <line x1="14" y1="11" x2="14" y2="17" stroke="{{color}}" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </view>
+</template>

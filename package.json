@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@alicloud/dysmsapi20170525": "^2.0.24",
+    "crypto-js": "^4.2.0",
     "rhea": "^3.0.2"
   }
 }

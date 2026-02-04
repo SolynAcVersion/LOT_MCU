@@ -1,0 +1,27 @@
+<!--pages/test/test.wxml-->
+<view class="container">
+  <view class="header">HMAC-SHA256 签名测试</view>
+
+  <view class="section">
+    <text class="label">Python期望签名：</text>
+    <text class="value">{{pythonSignature}}</text>
+  </view>
+
+  <view class="section">
+    <text class="label">微信小程序签名：</text>
+    <text class="value">{{wechatSignature}}</text>
+  </view>
+
+  <view class="section">
+    <text class="label">测试结果：</text>
+    <text class="result {{testResult.includes('SUCCESS') ? 'success' : 'failed'}}">{{testResult}}</text>
+  </view>
+
+  <button class="test-btn" bindtap="testSignature">测试签名</button>
+
+  <view class="info">
+    <text class="info-title">测试说明：</text>
+    <text class="info-text">点击按钮测试 HMAC-SHA256 实现</text>
+    <text class="info-text">如果签名一致，说明Web Crypto API可用</text>
+  </view>
+</view>

@@ -63,10 +63,23 @@
             <view class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full text-text-sub-light hover-bg-gray-100 transition-colors border border-gray-200 relative" bindtap="showFunction">
             <view class="w-4 h-0.5 bg-gray-500 rounded-full absolute transition-transform duration-300 {{functionShow ? 'rotate-45' : ''}}"></view>
             <view class="w-0.5 h-4 bg-gray-500 rounded-full absolute transition-transform duration-300 {{functionShow ? 'rotate-45' : ''}}"></view>
+            <text class="text-lg">➕</text>
             </view>
+
+            <!-- Voice Input Button (按住录音) -->
+            <view
+              class="flex-shrink-0 w-14 h-14 flex items-center justify-center rounded-full {{isRecording ? 'bg-red-500 scale-110' : 'bg-primary'}} transition-all duration-200 shadow-md hover:shadow-lg"
+              bindtouchstart="startRecording"
+              bindtouchend="stopRecording"
+              bindtouchcancel="cancelRecording">
+              <!-- 麦克风 Emoji -->
+              <text class="text-2xl {{isRecording ? 'animate-pulse' : ''}}">🎤</text>
+            </view>
+
             <!-- Send Button (Dynamic Color) -->
             <view class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{content.length > 0 ? 'bg-primary hover-bg-blue-600' : 'bg-gray-300'}} transition-colors shadow-sm text-white" bindtap="sendClick">
-            <image src="/static/chatting(black).png" class="w-5 h-5 filter invert" />
+              <!-- 发送 Emoji -->
+              <text class="text-lg">✈️</text>
             </view>
         </view>
         </view>
@@ -76,14 +89,29 @@
     <view class="bg-surface-light overflow-hidden transition-all duration-300 ease-in-out" style="height: {{functionShow ? '320rpx' : '0'}};">
         <view class="p-6 pt-4 border-t border-gray-100">
             <view class="flex items-start justify-between">
-                <block wx:for="{{menuList}}" wx:key="index">
-                    <view class="flex flex-col items-center gap-3" bindtap="menuFun" data-type="{{item.type}}">
-                        <view class="w-12 h-12 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
-                            <image src="{{item.icon}}" class="w-6 h-6 opacity-80" />
-                        </view>
-                        <text class="text-xs text-text-sub-light text-center">{{item.text}}</text>
+                <!-- 照片按钮 -->
+                <view class="flex flex-col items-center gap-3" bindtap="menuFun" data-type="photo">
+                    <view class="w-12 h-12 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
+                      <text class="text-2xl">🖼️</text>
                     </view>
-                </block>
+                    <text class="text-xs text-text-sub-light text-center">照片</text>
+                </view>
+
+                <!-- 相机按钮 -->
+                <view class="flex flex-col items-center gap-3" bindtap="menuFun" data-type="camera">
+                    <view class="w-12 h-12 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
+                      <text class="text-2xl">📷</text>
+                    </view>
+                    <text class="text-xs text-text-sub-light text-center">拍摄</text>
+                </view>
+
+                <!-- 删除聊天记录按钮 -->
+                <view class="flex flex-col items-center gap-3" bindtap="menuFun" data-type="chatting">
+                    <view class="w-12 h-12 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center">
+                      <text class="text-2xl">🗑️</text>
+                    </view>
+                    <text class="text-xs text-text-sub-light text-center">清空记录</text>
+                </view>
             </view>
         </view>
     </view>

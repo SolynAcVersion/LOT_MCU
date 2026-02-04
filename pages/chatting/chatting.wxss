@@ -3,6 +3,30 @@
     max-width: 80%;
 }
 
+/* SVG 图标动画 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 按钮缩放效果 */
+.scale-110 {
+  transform: scale(1.1);
+}
+
+/* 过渡动画 */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
 .rounded-tl-none {
     border-top-left-radius: 0;
 }

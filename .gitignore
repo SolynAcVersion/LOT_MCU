@@ -1,1 +1,48 @@
+# Claude Code
 /.claude/
+
+# ====================
+# 敏感配置文件
+# ====================
+# 科大讯飞API配置（包含密钥）
+config/xfyun.config.js
+# 其他私有配置文件
+config/*.config.js
+!config/*.example.js
+
+# ====================
+# 依赖和构建产物
+# ====================
+node_modules/
+dist/
+build/
+.min.js
+
+# ====================
+# 微信小程序
+# ====================
+# 私有配置
+project.private.config.json
+project.config.json
+
+# ====================
+# 日志和临时文件
+# ====================
+*.log
+logs/
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# ====================
+# IDE和编辑器
+# ====================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.venv

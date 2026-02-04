@@ -1,6 +1,9 @@
 // pages/chatting/chatting.js
 
 const app = getApp();
+// 使用 crypto-js 库的 HMAC-SHA256 实现
+const { hmacSha256, base64Encode } = require('../../utils/crypto_js_hmac.js');
+const xfyunConfig = require('../../config/xfyun.config.js');
 
 var conversationHistory = []; // 用于保存对话历史的数组
 
@@ -12,6 +15,9 @@ Page({
         keyboardHeight: '', // 键盘高度
         toolViewHeight: '',
         functionShow: false,
+        isRecording: false, // 是否正在录音
+        voiceText: '', // 语音识别的文本
+        isWebSocketConnected: false, // WebSocket 连接状态
         menuList: [
             {
               type: 'photo',
@@ -29,12 +35,14 @@ Page({
                 text: '删除聊天记录'
               }
           ],
+        // 科大讯飞配置（从配置文件加载）
+        xfyun: xfyunConfig.xfyun
     },
 
     onLoad() {
         this.setData({
             login: {
-                id: '2024',
+                id: '2026',
                 user: '游客',
                 avatar: 'https://picture-lsz.oss-cn-shanghai.aliyuncs.com/wechat/static/myself.png'
             },
@@ -42,6 +50,7 @@ Page({
         });
         this.initChat();
         this.requestLLMGPTAdvice();
+        this.initRecorderManager();
     },
 
     // 初始化聊天
@@ -769,5 +778,777 @@ Page({
             }
         }
         return false;
+    },
+
+    // ==================== 语音识别相关函数 ====================
+
+    // ==================== 备份：原始录音逻辑 ====================
+    // 初始化录音管理器
+    initRecorderManager: function() {
+        const that = this;
+        this.recorderManager = wx.getRecorderManager();
+        this.audioFrameBuffer = [];  // 音频帧缓冲区
+        this.isFirstFrame = true;    // 是否第一帧
+
+        // 实时音频帧事件（可能返回PCM数据）
+        this.recorderManager.onFrameRecorded((res) => {
+            console.log('收到音频帧:', res);
+            const { frameBuffer, isLastFrame } = res;
+
+            // 将 ArrayBuffer 转换为 Base64
+            const base64Data = wx.arrayBufferToBase64(frameBuffer);
+            console.log('音频帧大小:', frameBuffer.byteLength, 'Base64长度:', base64Data.length);
+
+            // 如果已经连接了 WebSocket，直接发送
+            if (that.webSocketTask && that.data.isWebSocketConnected) {
+                if (that.isFirstFrame) {
+                    // 第一帧：包含参数
+                    that.sendFirstAudioFrame(base64Data);
+                    that.isFirstFrame = false;
+                } else {
+                    // 中间帧
+                    that.sendMiddleAudioFrame(base64Data);
+                }
+            } else {
+                // 如果 WebSocket 还没连接，先缓存
+                that.audioFrameBuffer.push(base64Data);
+                console.log('WebSocket 未连接，音频帧已缓存，当前缓存:', that.audioFrameBuffer.length, '帧');
+            }
+        });
+
+        this.recorderManager.onStop((res) => {
+            console.log('录音停止', res);
+
+            // 发送最后一帧
+            if (that.webSocketTask && that.data.isWebSocketConnected) {
+                that.sendLastAudioFrame();
+            }
+
+            that.setData({ isRecording: false });
+        });
+
+        this.recorderManager.onError((err) => {
+            console.error('录音错误', err);
+            wx.showToast({
+                title: '录音失败',
+                icon: 'none'
+            });
+            that.setData({ isRecording: false });
+        });
+    },
+
+    // 备份：开始录音（按住触发）
+    startRecordingBackup: function() {
+        const that = this;
+
+        // 防止重复触发
+        if (that.data.isRecording) {
+            return;
+        }
+
+        // 检查配置
+        if (!that.data.xfyun.apiKey || !that.data.xfyun.apiSecret || !that.data.xfyun.appId) {
+            wx.showToast({
+                title: '请先配置讯飞API',
+                icon: 'none',
+                duration: 2000
+            });
+            return;
+        }
+
+        // 开始录音（使用 PCM 格式）
+        that.recorderManager.start({
+            duration: 60000, // 最长60秒
+            sampleRate: 16000,
+            numberOfChannels: 1,
+            encodeBitRate: 48000,
+            format: 'pcm', // 使用 PCM 格式
+            frameSize: 5 // 设置帧大小，触发 onFrameRecorded
+        });
+
+        that.setData({
+            isRecording: true,
+            voiceText: ''
+        });
+
+        wx.vibrateShort(); // 震动反馈
+    },
+
+    // ==================== 测试逻辑：生成并发送测试音频 ====================
+
+    // 开始录音（使用PCM格式）
+    startRecording: function() {
+        const that = this;
+
+        // 防止重复触发
+        if (that.data.isRecording) {
+            return;
+        }
+
+        // 检查配置
+        if (!that.data.xfyun.apiKey || !that.data.xfyun.apiSecret || !that.data.xfyun.appId) {
+            wx.showToast({
+                title: '请先配置讯飞API',
+                icon: 'none',
+                duration: 2000
+            });
+            return;
+        }
+
+        // 重置状态
+        that.audioFrameBuffer = [];
+        that.isFirstFrame = true;
+
+        // 先建立 WebSocket 连接
+        console.log('开始录音，先建立 WebSocket 连接...');
+        that.connectWebSocket();
+
+        // 开始录音（使用 PCM 格式）
+        that.recorderManager.start({
+            duration: 60000, // 最长60秒
+            sampleRate: 16000,
+            numberOfChannels: 1,
+            encodeBitRate: 48000,
+            format: 'pcm', // 使用 PCM 格式
+            frameSize: 5 // 设置帧大小，触发 onFrameRecorded
+        });
+
+        that.setData({
+            isRecording: true,
+            voiceText: ''
+        });
+
+        wx.vibrateShort(); // 震动反馈
+        wx.showToast({
+            title: '开始录音...',
+            icon: 'none',
+            duration: 1000
+        });
+    },
+
+    // ==================== 以下为已废弃的测试代码 ====================
+    /*
+    // 生成并发送测试音频（已废弃 - 使用真实录音功能）
+    generateAndSendTestAudio: function() {
+        const that = this;
+
+        // 生成1秒的PCM静音数据（16000采样率 * 2字节/采样点 * 1秒 = 32000字节）
+        const sampleRate = 16000;
+        const duration = 1; // 1秒
+        const totalSamples = sampleRate * duration;
+        const buffer = new ArrayBuffer(totalSamples * 2); // 16位 = 2字节
+        const view = new Int16Array(buffer);
+
+        // 填充静音数据（全0）
+        for (let i = 0; i < totalSamples; i++) {
+            view[i] = 0;
+        }
+
+        // 转换为Base64
+        const uint8Array = new Uint8Array(buffer);
+        let binary = '';
+        for (let i = 0; i < uint8Array.length; i++) {
+            binary += String.fromCharCode(uint8Array[i]);
+        }
+        const base64Data = wx.arrayBufferToBase64(buffer);
+
+        console.log('测试音频生成成功，大小:', base64Data.length);
+
+        // 使用代理服务器调用讯飞API
+        that.callProxyServer(base64Data);
+    },
+    */
+
+    // 通过代理服务器调用讯飞API
+    callProxyServer: function(audioBase64) {
+        const that = this;
+
+        if (!that.data.xfyun.useProxy) {
+            // 如果不使用代理，尝试直接连接WebSocket
+            that.audioDataBase64 = audioBase64;
+            that.connectWebSocket();
+            return;
+        }
+
+        console.log('通过代理服务器调用讯飞API...');
+
+        wx.request({
+            url: that.data.xfyun.proxyUrl,
+            method: 'POST',
+            header: {
+                'content-type': 'application/json'
+            },
+            data: {
+                audio: audioBase64
+            },
+            success: function(res) {
+                console.log('代理服务器响应:', res.data);
+
+                if (res.data.success) {
+                    console.log('识别成功:', res.data.result);
+                    that.setData({
+                        content: that.data.content + res.data.result
+                    });
+
+                    if (res.data.result) {
+                        wx.showToast({
+                            title: '识别成功: ' + res.data.result,
+                            icon: 'success',
+                            duration: 2000
+                        });
+                    }
+                } else {
+                    console.error('识别失败:', res.data.error);
+                    wx.showToast({
+                        title: '识别失败: ' + (res.data.error || '未知错误'),
+                        icon: 'none',
+                        duration: 2000
+                    });
+                }
+
+                that.setData({ isRecording: false });
+            },
+            fail: function(err) {
+                console.error('代理服务器请求失败:', err);
+                wx.showModal({
+                    title: '代理服务器连接失败',
+                    content: '请确保代理服务器已启动(python xfyun_proxy_server.py)',
+                    showCancel: false
+                });
+                that.setData({ isRecording: false });
+            }
+        });
+    },
+
+    // 停止录音（松手触发）
+    stopRecording: function() {
+        const that = this;
+
+        if (!that.data.isRecording) {
+            return;
+        }
+
+        // 停止录音管理器
+        that.recorderManager.stop();
+
+        that.setData({
+            isRecording: false
+        });
+        wx.vibrateShort(); // 震动反馈
+
+        wx.showToast({
+            title: '录音结束，正在识别...',
+            icon: 'loading',
+            duration: 1000
+        });
+    },
+
+    // 取消录音（意外中断）
+    cancelRecording: function() {
+        const that = this;
+
+        if (!that.data.isRecording) {
+            return;
+        }
+
+        that.recorderManager.stop();
+        that.setData({
+            isRecording: false
+        });
+
+        wx.showToast({
+            title: '录音已取消',
+            icon: 'none',
+            duration: 1000
+        });
+    },
+
+    // 录音停止处理（已废弃 - 现在使用实时音频帧发送）
+    handleRecordingStop: function(res) {
+        const that = this;
+        console.log('录音文件:', res.tempFilePath);
+        console.log('录音停止，最后一帧已通过 onFrameRecorded 发送');
+
+        // 不再需要读取文件，因为音频已经通过 onFrameRecorded 实时发送了
+        // that.readAudioAndRecognize(res.tempFilePath);
+    },
+
+    // 读取音频文件并进行语音识别
+    readAudioAndRecognize: function(audioFilePath) {
+        const that = this;
+
+        wx.getFileSystemManager().readFile({
+            filePath: audioFilePath,
+            encoding: 'base64',
+            success: function(res) {
+                console.log('=== 录音文件读取成功 ===');
+                console.log('文件路径:', audioFilePath);
+                console.log('数据大小:', res.data.length, '字节');
+                console.log('数据前100字符:', res.data.substring(0, 100));
+                console.log('=====================');
+
+                // 使用代理服务器调用讯飞API
+                if (that.data.xfyun.useProxy) {
+                    that.callProxyServer(res.data);
+                } else {
+                    // 如果不使用代理，保存音频数据，等待WebSocket连接
+                    that.audioDataBase64 = res.data;
+                    that.connectWebSocket();
+                }
+            },
+            fail: function(err) {
+                console.error('读取音频文件失败:', err);
+                wx.showToast({
+                    title: '读取音频失败',
+                    icon: 'none'
+                });
+            }
+        });
+    },
+
+    // 生成科大讯飞鉴权URL（使用 crypto-js）
+    generateAuthUrl: function() {
+        const that = this;
+        const { apiKey, apiSecret, host, path } = that.data.xfyun;
+
+        // 生成RFC1123格式的时间
+        const date = new Date().toUTCString();
+
+        // 构造signature_origin - 使用实际连接的域名进行签名
+        const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
+
+        console.log('=== 鉴权调试信息 ===');
+        console.log('host:', host);
+        console.log('date:', date);
+        console.log('signature_origin:', signatureOrigin);
+
+        // 使用 crypto-js 进行 HMAC-SHA256 签名（同步）
+        try {
+            const signature = that.hmacSha256(signatureOrigin, apiSecret);
+            console.log('signature:', signature);
+
+            // 构造authorization_origin
+            const authorizationOrigin = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
+
+            console.log('authorization_origin:', authorizationOrigin);
+
+            // base64编码authorization
+            const authorization = that.base64Encode(authorizationOrigin);
+
+            console.log('authorization (base64):', authorization.substring(0, 50) + '...');
+
+            // 拼接URL - 使用实际连接的域名
+            const url = `wss://${host}${path}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
+
+            console.log('完整URL长度:', url.length);
+            console.log('==================');
+
+            return url;
+        } catch (error) {
+            console.error('生成鉴权URL失败:', error);
+            throw error;
+        }
+    },
+
+    // HMAC-SHA256签名（使用 crypto-js，同步）
+    hmacSha256: function(message, secret) {
+        try {
+            const signature = hmacSha256(message, secret);
+            return signature;
+        } catch (error) {
+            console.error('HMAC-SHA256 签名失败:', error);
+            throw error;
+        }
+    },
+
+    // Base64编码
+    base64Encode: function(str) {
+        return base64Encode(str);
+    },
+
+    // 建立WebSocket连接（使用 crypto-js 同步鉴权）
+    connectWebSocket: function() {
+        const that = this;
+
+        try {
+            // 生成鉴权URL（同步）
+            const url = that.generateAuthUrl();
+            console.log('WebSocket URL:', url);
+
+            // 不设置任何header，与Python脚本保持一致
+            that.webSocketTask = wx.connectSocket({
+                url: url,
+                success: function() {
+                    console.log('WebSocket初始化成功');
+                }
+            });
+
+            // 连接打开
+            that.webSocketTask.onOpen(() => {
+                console.log('WebSocket连接已打开，准备发送数据');
+                that.setData({ isWebSocketConnected: true });
+
+                // 不再自动发送数据，等待实时音频帧
+                // setTimeout(() => {
+                //     that.sendAudioData();
+                // }, 100);
+            });
+
+            // 接收消息
+            that.webSocketTask.onMessage((res) => {
+                console.log('收到消息:', res.data);
+                that.handleWSMessage(res.data);
+            });
+
+            // 连接关闭
+            that.webSocketTask.onClose(() => {
+                console.log('WebSocket连接已关闭');
+            });
+
+            // 连接错误
+            that.webSocketTask.onError((err) => {
+                console.error('=== WebSocket连接失败 ===');
+                console.error('错误详情:', err);
+                console.error('错误码:', err.errCode);
+                console.error('错误信息:', err.errMsg);
+                console.error('==================');
+
+                // 根据错误码给出具体提示
+                let tips = '连接失败';
+                if (err.errCode === 1004) {
+                    if (err.errMsg.includes('Invalid HTTP status')) {
+                        tips = '鉴权失败：请检查API密钥和服务是否开通';
+                    } else if (err.errMsg.includes('Host not found')) {
+                        tips = '域名解析失败';
+                    } else {
+                        tips = '鉴权失败';
+                    }
+                } else if (err.errCode === 1002) {
+                    tips = '服务器关闭连接';
+                }
+
+                wx.showToast({
+                    title: tips,
+                    icon: 'none',
+                    duration: 3000
+                });
+            });
+
+        } catch (error) {
+            console.error('WebSocket连接失败:', error);
+            wx.showToast({
+                title: '连接失败',
+                icon: 'none'
+            });
+        }
+    },
+
+    // 发送音频数据（分帧发送，参考 Python 实现）
+    sendAudioData: function() {
+        const that = this;
+        const audioData = that.audioDataBase64;
+
+        console.log('=== 音频数据调试信息 ===');
+        console.log('音频数据总长度:', audioData.length);
+        console.log('音频数据前100个字符:', audioData.substring(0, 100));
+        console.log('音频数据后100个字符:', audioData.substring(audioData.length - 100));
+        console.log('=====================');
+
+        // 每次发送 1280 字节的音频数据（与 Python 保持一致）
+        const frameSize = 1280;
+        let offset = 0;
+        let frameCount = 0;
+
+        // 第一帧：status=0，包含参数配置
+        function sendFirstFrame() {
+            frameCount++;
+            console.log(`发送第 ${frameCount} 帧（第一帧，包含参数）`);
+
+            const firstChunk = audioData.slice(0, frameSize);
+            offset += frameSize;
+
+            const frame = {
+                header: {
+                    app_id: that.data.xfyun.appId,
+                    status: 0  // 第一帧
+                },
+                parameter: {
+                    iat: {
+                        domain: 'slm',
+                        language: 'zh_cn',
+                        accent: 'mulacc',
+                        result: {
+                            encoding: 'utf8',
+                            compress: 'raw',
+                            format: 'json'
+                        }
+                    }
+                },
+                payload: {
+                    audio: {
+                        audio: firstChunk,
+                        encoding: 'raw',
+                        sample_rate: 16000
+                    }
+                }
+            };
+
+            that.webSocketTask.send({
+                data: JSON.stringify(frame),
+                success: function() {
+                    console.log('第一帧发送成功');
+                    // 继续发送中间帧
+                    setTimeout(sendMiddleFrames, 40);  // 40ms 间隔，与 Python 一致
+                },
+                fail: function(err) {
+                    console.error('第一帧发送失败:', err);
+                }
+            });
+        }
+
+        // 中间帧：status=1
+        function sendMiddleFrames() {
+            if (offset >= audioData.length) {
+                // 音频发送完毕，发送最后一帧
+                sendLastFrame();
+                return;
+            }
+
+            frameCount++;
+            if (frameCount % 10 === 0) {
+                console.log(`发送第 ${frameCount} 帧...`);
+            }
+
+            const chunk = audioData.slice(offset, offset + frameSize);
+            offset += frameSize;
+
+            const frame = {
+                header: {
+                    app_id: that.data.xfyun.appId,
+                    status: 1  // 中间帧
+                },
+                payload: {
+                    audio: {
+                        audio: chunk,
+                        encoding: 'raw',
+                        sample_rate: 16000
+                    }
+                }
+            };
+
+            that.webSocketTask.send({
+                data: JSON.stringify(frame),
+                success: function() {
+                    // 继续发送下一帧
+                    setTimeout(sendMiddleFrames, 40);
+                },
+                fail: function(err) {
+                    console.error(`第 ${frameCount} 帧发送失败:`, err);
+                }
+            });
+        }
+
+        // 最后一帧：status=2，audio 为空
+        function sendLastFrame() {
+            frameCount++;
+            console.log(`发送第 ${frameCount} 帧（最后一帧，结束标记）`);
+
+            const frame = {
+                header: {
+                    app_id: that.data.xfyun.appId,
+                    status: 2  // 最后一帧
+                },
+                payload: {
+                    audio: {
+                        audio: '',  // 空字符串，表示结束
+                        encoding: 'raw',
+                        sample_rate: 16000
+                    }
+                }
+            };
+
+            that.webSocketTask.send({
+                data: JSON.stringify(frame),
+                success: function() {
+                    console.log(`音频数据发送完成，共发送 ${frameCount} 帧`);
+                },
+                fail: function(err) {
+                    console.error('最后一帧发送失败:', err);
+                }
+            });
+        }
+
+        // 开始发送第一帧
+        sendFirstFrame();
+    },
+
+    // 发送第一帧音频（包含参数配置）
+    sendFirstAudioFrame: function(base64Data) {
+        const that = this;
+
+        const frame = {
+            header: {
+                app_id: that.data.xfyun.appId,
+                status: 0  // 第一帧
+            },
+            parameter: {
+                iat: {
+                    domain: 'slm',
+                    language: 'zh_cn',
+                    accent: 'mulacc',
+                    result: {
+                        encoding: 'utf8',
+                        compress: 'raw',
+                        format: 'json'
+                    }
+                }
+            },
+            payload: {
+                audio: {
+                    audio: base64Data,
+                    encoding: 'raw',
+                    sample_rate: 16000
+                }
+            }
+        };
+
+        that.webSocketTask.send({
+            data: JSON.stringify(frame),
+            success: function() {
+                console.log('✅ 第一帧发送成功（包含参数）');
+            },
+            fail: function(err) {
+                console.error('❌ 第一帧发送失败:', err);
+            }
+        });
+    },
+
+    // 发送中间帧音频
+    sendMiddleAudioFrame: function(base64Data) {
+        const that = this;
+
+        const frame = {
+            header: {
+                app_id: that.data.xfyun.appId,
+                status: 1  // 中间帧
+            },
+            payload: {
+                audio: {
+                    audio: base64Data,
+                    encoding: 'raw',
+                    sample_rate: 16000
+                }
+            }
+        };
+
+        that.webSocketTask.send({
+            data: JSON.stringify(frame),
+            success: function() {
+                console.log('✅ 中间帧发送成功');
+            },
+            fail: function(err) {
+                console.error('❌ 中间帧发送失败:', err);
+            }
+        });
+    },
+
+    // 发送最后一帧（结束标记）
+    sendLastAudioFrame: function() {
+        const that = this;
+
+        const frame = {
+            header: {
+                app_id: that.data.xfyun.appId,
+                status: 2  // 最后一帧
+            },
+            payload: {
+                audio: {
+                    audio: '',  // 空字符串，表示结束
+                    encoding: 'raw',
+                    sample_rate: 16000
+                }
+            }
+        };
+
+        that.webSocketTask.send({
+            data: JSON.stringify(frame),
+            success: function() {
+                console.log('✅ 最后一帧发送成功（结束标记）');
+            },
+            fail: function(err) {
+                console.error('❌ 最后一帧发送失败:', err);
+            }
+        });
+    },
+
+    // 处理WebSocket消息
+    handleWSMessage: function(data) {
+        const that = this;
+        try {
+            const response = JSON.parse(data);
+
+            if (response.header && response.header.code !== 0) {
+                console.error('识别错误:', response.header);
+                return;
+            }
+
+            if (response.payload && response.payload.result) {
+                const result = response.payload.result;
+                if (result.text) {
+                    try {
+                        // 讯飞API的text字段是Base64编码的JSON，需要先解码
+                        // 使用 crypto-js 解码 Base64
+                        const CryptoJS = require('crypto-js');
+                        const words = CryptoJS.enc.Base64.parse(result.text);
+                        const decodedText = words.toString(CryptoJS.enc.Utf8);
+                        console.log('解码后的text:', decodedText);
+
+                        const textObj = JSON.parse(decodedText);
+                        if (textObj.ws && textObj.ws.length > 0) {
+                            let sentence = '';
+                            textObj.ws.forEach(item => {
+                                if (item.cw && item.cw.length > 0) {
+                                    sentence += item.cw[0].w;
+                                }
+                            });
+
+                            // 判断是流式结果还是最终结果
+                            if (textObj.pgs === 'rpl' || textObj.ls === true) {
+                                // 最终结果，替换之前的内容
+                                that.setData({
+                                    voiceText: sentence
+                                });
+                            } else if (textObj.pgs === 'apd') {
+                                // 流式结果，追加内容
+                                that.setData({
+                                    voiceText: that.data.voiceText + sentence
+                                });
+                            }
+
+                            console.log('识别结果:', sentence);
+
+                            // 检查是否是最后一帧（status=2表示识别结束）
+                            if (response.header.status === 2) {
+                                console.log('识别完成，最终结果:', that.data.voiceText);
+                                // 更新到输入框
+                                if (that.data.voiceText) {
+                                    that.setData({
+                                        content: that.data.content + that.data.voiceText
+                                    });
+                                }
+                                // 关闭WebSocket连接
+                                if (that.webSocketTask) {
+                                    that.webSocketTask.close();
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('解析识别结果失败:', e);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('处理消息失败:', e);
+        }
     },
 })
